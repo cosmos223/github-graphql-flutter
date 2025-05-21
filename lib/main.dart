@@ -114,6 +114,20 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             icon: Icon(Icons.settings)
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdvancedSearchPage(),
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              icon: Icon(Icons.manage_search)
+          ),
+        ],
       ),
       body: RepositoryListWidget(),
     );
