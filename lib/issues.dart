@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:github_graphql/GraphQL/GetIssues.graphql.dart';
-import 'package:github_graphql/createIssue.dart';
+import 'package:github_graphql/create_issue.dart';
+import 'package:github_graphql/issue_detail.dart';
 
 class IssuesPage extends HookWidget {
-  IssuesPage(this.id, this.name, {super.key});
-  String id;
-  String name;
+  const IssuesPage(this.id, this.name, {super.key});
+  final String id;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +67,14 @@ class IssuesPage extends HookWidget {
           ListTile(
             title: Text(e?.title ?? ""),
             subtitle: Text(e?.author?.login ?? ""),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => IssuesPage(e.id)),
-              // );
+            onTap: () async {
+              final issueId = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => IssueDetailPage(e!.id, e.title)),
+              );
+              if (issueId is String && issueId.isNotEmpty) {
+                queryResult.refetch();
+              }
             },
           ),
       ]).toList();
@@ -80,7 +83,6 @@ class IssuesPage extends HookWidget {
       if (node is Query$GetIssuesByRepositoryID$node$$Repository && node.issues.pageInfo.hasNextPage) {
         listChildren.add(Padding(padding: EdgeInsets.all(8), child: ElevatedButton(
           onPressed: () {
-            // TODO: ページング処理
             fetchMore();
           },
           child: Row(

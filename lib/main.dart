@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:github_graphql/advanced_search.dart';
 import 'package:github_graphql/issues.dart';
 import 'package:github_graphql/setting.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
       home: MyHomePage(title: 'Repositories')
     );
@@ -133,7 +135,7 @@ class RepositoryListWidget extends HookWidget {
     final queryResult = useQuery$GetRepositories(
       Options$Query$GetRepositories(
         variables: Variables$Query$GetRepositories(
-          query: searchQuery.value,
+          query: "in:name ${searchQuery.value}",
           after: null,
         ),
       ),
@@ -144,7 +146,7 @@ class RepositoryListWidget extends HookWidget {
       queryResult.fetchMore(
         FetchMoreOptions$Query$GetRepositories(
           variables: Variables$Query$GetRepositories(
-            query: searchQuery.value,
+            query: "in:name ${searchQuery.value}",
             after: result.parsedData?.search.pageInfo.endCursor
           ),
           updateQuery: (previousResultData, fetchMoreResultData) {

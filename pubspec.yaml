@@ -40,6 +40,7 @@ dependencies:
   hooks_riverpod: ^2.6.1
   shared_preferences: ^2.5.3
   settings_ui: ^2.0.2
+  markdown_widget: ^2.3.2+8
 
 dev_dependencies:
   flutter_test:

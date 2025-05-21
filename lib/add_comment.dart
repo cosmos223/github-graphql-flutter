@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:github_graphql/GraphQL/CreateIssue.graphql.dart';
+import 'package:github_graphql/GraphQL/AddComment.graphql.dart';
 
-class CreateIssuePage extends HookWidget {
-  CreateIssuePage(this.id, {super.key});
-  String id;
+class AddCommentPage extends HookWidget {
+  const AddCommentPage(this.id, {super.key});
+  final String id;
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-    String title = "";
-    String? body;
+    String body = "";
 
-    final mutation = useMutation$CreateIssue(); // ← useMutationはここで呼び出す必要あり
+    final mutation = useMutation$AddComment(); // ← useMutationはここで呼び出す必要あり
     final runMutation = mutation.runMutation;
 
     return Scaffold(
@@ -28,22 +26,20 @@ class CreateIssuePage extends HookWidget {
             .inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("Create New Issue"),
+        title: Text("Add Comment"),
         actions: <Widget>[
           IconButton(
-            icon: const Text('Create'),
+            icon: const Text('Add'),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 // Process data.
                 _formKey.currentState?.save();
 
-                print(title);
                 print(body);
 
                 runMutation(
-                    Variables$Mutation$CreateIssue(
-                      repositoryId: id,
-                      title: title,
+                    Variables$Mutation$AddComment(
+                      id: id,
                       body: body,
                     )
                 );
@@ -95,24 +91,17 @@ class CreateIssuePage extends HookWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                   child: TextFormField(
-                    onSaved: (value) => title = value!,
-                    decoration: const InputDecoration(labelText: 'Title', floatingLabelBehavior: FloatingLabelBehavior.always),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter title';
-                      }
-                      return null;
-                      },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                  child: TextFormField(
-                    onSaved: (value) => body = value,
+                    onSaved: (value) => body = value!,
                     decoration: const InputDecoration(labelText: 'Body', border: OutlineInputBorder(), floatingLabelBehavior: FloatingLabelBehavior.always,),
                     keyboardType: TextInputType.multiline,
                     minLines: 6,
                     maxLines: null,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ],
